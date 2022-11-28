@@ -5,12 +5,16 @@ import org.docx4j.finders.ClassFinder;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 import org.docx4j.openpackaging.parts.relationships.Namespaces;
 import org.docx4j.openpackaging.parts.relationships.RelationshipsPart;
+import org.docx4j.wml.CommentRangeEnd;
+import org.docx4j.wml.CommentRangeStart;
 import org.docx4j.wml.ContentAccessor;
 import org.docx4j.wml.Drawing;
+import org.docx4j.wml.P;
 import org.docx4j.wml.R;
 import org.wickedsource.docxstamper.api.DocxStamperException;
 import org.wickedsource.docxstamper.replace.typeresolver.image.ImageResolver;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -136,6 +140,49 @@ public class DocumentUtil {
         return finder.results
                 .stream()
                 .map(clazz::cast);
+    }
+
+    public static List<Object> getDocPartsInsideComment(P paragraph) {
+        BigInteger commentId = null;
+        boolean foundEnd = false;
+
+        List<Object> docParts = new ArrayList<>();
+        docParts.add(paragraph);
+
+        for (Object object : paragraph.getContent()) {
+            if (object instanceof CommentRangeStart) {
+                commentId = ((CommentRangeStart) object).getId();
+            }
+            if (object instanceof CommentRangeEnd && commentId != null && commentId.equals(((CommentRangeEnd) object).getId())) {
+                foundEnd = true;
+            }
+        }
+        if (!foundEnd && commentId != null) {
+            Object parent = paragraph.getParent();
+            if (parent instanceof ContentAccessor) {
+                ContentAccessor contentAccessor = (ContentAccessor) parent;
+                int index = contentAccessor.getContent().indexOf(paragraph);
+                for (int i = index + 1; i < contentAccessor.getContent().size() && !foundEnd; i++) {
+                    Object next = contentAccessor.getContent().get(i);
+
+                    if (next instanceof CommentRangeEnd && ((CommentRangeEnd) next).getId().equals(commentId)) {
+                        foundEnd = true;
+                    } else {
+                        docParts.add(next);
+                        if (next instanceof ContentAccessor) {
+                            ContentAccessor childContent = (ContentAccessor) next;
+                            for (Object child : childContent.getContent()) {
+                                if (child instanceof CommentRangeEnd && ((CommentRangeEnd) child).getId().equals(commentId)) {
+                                    foundEnd = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return docParts;
     }
 
 }

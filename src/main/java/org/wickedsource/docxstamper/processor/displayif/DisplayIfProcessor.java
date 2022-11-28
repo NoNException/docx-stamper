@@ -7,19 +7,14 @@ import org.docx4j.wml.Tc;
 import org.docx4j.wml.Tr;
 import org.wickedsource.docxstamper.processor.BaseCommentProcessor;
 import org.wickedsource.docxstamper.processor.CommentProcessingException;
-import org.wickedsource.docxstamper.processor.repeat.ParagraphRepeatProcessor;
 import org.wickedsource.docxstamper.util.CommentUtil;
-import org.wickedsource.docxstamper.util.CommentWrapper;
 import org.wickedsource.docxstamper.util.ObjectDeleter;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
-import org.springframework.util.CollectionUtils;
-
-import static org.wickedsource.docxstamper.util.ParagraphUtil.getParagraphsInsideComment;
+import static org.wickedsource.docxstamper.util.DocumentUtil.getDocPartsInsideComment;
 
 public class DisplayIfProcessor extends BaseCommentProcessor implements IDisplayIfProcessor {
 
@@ -30,6 +25,7 @@ public class DisplayIfProcessor extends BaseCommentProcessor implements IDisplay
 	private List<Tr> tableRowsToBeRemoved = new ArrayList<>();
 
 	private List<Objects> objectsToBeRemoved = new ArrayList<>();
+	private List<Object> docPartsToBeRemoved = new ArrayList<>();
 
 	public DisplayIfProcessor() {
 	}
@@ -41,6 +37,13 @@ public class DisplayIfProcessor extends BaseCommentProcessor implements IDisplay
 		removeTables(deleter);
 		removeTableRows(deleter);
 		removeObjects(deleter);
+		removeDocParts(deleter);
+	}
+
+	private void removeDocParts(ObjectDeleter deleter) {
+		for(Object o:docPartsToBeRemoved){
+			deleter.deleteObject(o);
+		}
 	}
 
 	@Override
@@ -107,8 +110,8 @@ public class DisplayIfProcessor extends BaseCommentProcessor implements IDisplay
 	public void displayDocPartIf(Boolean condition) {
 		if (!condition) {
 			P paragraph = getParagraph();
-			List<P> paragraphsInsideComment = getParagraphsInsideComment(paragraph);
-			paragraphsToBeRemoved.addAll(paragraphsInsideComment);
+			List<Object> paragraphsInsideComment = getDocPartsInsideComment(paragraph);
+			docPartsToBeRemoved.addAll(paragraphsInsideComment);
 			getCurrentCommentWrapper().getChildren().clear();
 			CommentUtil.deleteComment(getCurrentCommentWrapper());
 		}
