@@ -60,6 +60,9 @@ public class RepeatDocPartProcessor extends BaseCommentProcessor implements IRep
                 throw new RuntimeException(e);
             }
         }
+        // clear children
+        Set<CommentWrapper> children = currentCommentWrapper.getChildren();
+        children.clear();
     }
 
     private WordprocessingMLPackage copyTemplate(WordprocessingMLPackage doc) throws Docx4JException {

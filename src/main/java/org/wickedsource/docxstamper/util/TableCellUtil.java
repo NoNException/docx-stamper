@@ -1,6 +1,6 @@
 package org.wickedsource.docxstamper.util;
 
-import jakarta.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBElement;
 import org.docx4j.wml.ObjectFactory;
 import org.docx4j.wml.P;
 import org.docx4j.wml.Tbl;
@@ -20,8 +20,9 @@ public class TableCellUtil {
         for (Object contentElement : cell.getContent()) {
             if (contentElement instanceof P) {
                 return true;
-            } else if (contentElement instanceof JAXBElement && ((JAXBElement<?>) contentElement).getValue() instanceof Tbl)
+            } else if (contentElement instanceof JAXBElement && ((JAXBElement<?>) contentElement).getValue() instanceof Tbl) {
                 return true;
+            }
         }
         return false;
     }

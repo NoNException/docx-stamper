@@ -1,10 +1,12 @@
 package org.wickedsource.docxstamper.processor;
 
+import org.docx4j.wml.Comments;
 import org.docx4j.wml.P;
 import org.docx4j.wml.R;
 import org.wickedsource.docxstamper.api.commentprocessor.ICommentProcessor;
 import org.wickedsource.docxstamper.util.CommentWrapper;
 
+import java.util.List;
 import java.util.Objects;
 
 public abstract class BaseCommentProcessor implements ICommentProcessor {

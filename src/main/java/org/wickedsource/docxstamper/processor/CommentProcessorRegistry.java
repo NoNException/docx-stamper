@@ -1,5 +1,6 @@
 package org.wickedsource.docxstamper.processor;
 
+import org.apache.commons.lang3.StringUtils;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 import org.docx4j.wml.Comments;
 import org.docx4j.wml.P;
@@ -8,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.expression.spel.SpelEvaluationException;
 import org.springframework.expression.spel.SpelParseException;
+import org.springframework.util.CollectionUtils;
+
 import org.wickedsource.docxstamper.api.DocxStamperException;
 import org.wickedsource.docxstamper.api.UnresolvedExpressionException;
 import org.wickedsource.docxstamper.api.commentprocessor.ICommentProcessor;
@@ -203,11 +206,16 @@ public class CommentProcessorRegistry {
       processor.setParagraph(paragraph);
       processor.setCurrentRun(run);
       processor.setCurrentCommentWrapper(commentWrapper);
+
     }
 
     try {
       T contextRootProxy = proxyBuilder.build();
       expressionResolver.resolveExpression(commentString, contextRootProxy);
+      Set<CommentWrapper> childWrappers = commentWrapper.getChildren();
+      for (CommentWrapper child : childWrappers) {
+        comments.put(child.getComment().getId(), child);
+      }
       comments.remove(comment.getId()); // guarantee one-time processing
       logger.debug(
               String.format("Comment '%s' has been successfully processed by a comment processor.",

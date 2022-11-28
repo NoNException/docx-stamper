@@ -34,4 +34,10 @@ public interface IDisplayIfProcessor {
      */
     void displayTableIf(Boolean condition);
 
+    /**
+     * May be called to delete the Doc Part surrounding the commented paragraph, depending on the given boolean condition.
+     * @param condition if true, the table surrounding the commented paragraph will remain in the document. If false, the table
+     *                  will be deleted at stamping.
+     */
+    void displayDocPartIf(Boolean condition);
 }

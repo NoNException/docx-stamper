@@ -1,6 +1,6 @@
 package org.wickedsource.docxstamper.util;
 
-import jakarta.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBElement;
 import org.docx4j.XmlUtils;
 import org.docx4j.wml.*;
 import org.slf4j.Logger;

@@ -57,7 +57,7 @@ public abstract class AbstractDocx4jTest {
         OutputStream out;
         if (Boolean.parseBoolean(System.getProperty("keepOutputFile"))) {
             tempFile = File.createTempFile(getClass().getSimpleName(), ".docx");
-            logger.info(String.format(">>>>>>>> Saving DocxStamper output to temporary file %s <<<<<<<<", tempFile.getAbsolutePath()));
+            System.out.println(String.format(">>>>>>>> Saving DocxStamper output to temporary file %s <<<<<<<<", tempFile.getAbsolutePath()));
             out = Files.newOutputStream(tempFile.toPath());
         } else {
             out = new ByteArrayOutputStream();
