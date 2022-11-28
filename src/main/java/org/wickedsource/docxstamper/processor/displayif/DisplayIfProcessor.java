@@ -19,6 +19,8 @@ import java.util.Set;
 
 import org.springframework.util.CollectionUtils;
 
+import static org.wickedsource.docxstamper.util.ParagraphUtil.getParagraphsInsideComment;
+
 public class DisplayIfProcessor extends BaseCommentProcessor implements IDisplayIfProcessor {
 
 	private List<P> paragraphsToBeRemoved = new ArrayList<>();
@@ -105,11 +107,10 @@ public class DisplayIfProcessor extends BaseCommentProcessor implements IDisplay
 	public void displayDocPartIf(Boolean condition) {
 		if (!condition) {
 			P paragraph = getParagraph();
-			List<P> paragraphsInsideComment = ParagraphRepeatProcessor.getParagraphsInsideComment(paragraph);
+			List<P> paragraphsInsideComment = getParagraphsInsideComment(paragraph);
 			paragraphsToBeRemoved.addAll(paragraphsInsideComment);
 			getCurrentCommentWrapper().getChildren().clear();
 			CommentUtil.deleteComment(getCurrentCommentWrapper());
-
 		}
 
 	}
