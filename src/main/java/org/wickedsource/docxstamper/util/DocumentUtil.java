@@ -106,7 +106,7 @@ public class DocumentUtil {
 
             return Stream.of(
                             getElementStreamFrom(document, elementClass, Namespaces.HEADER),
-                            getElementStream(document.getMainDocumentPart(), elementClass),
+                            getElementStream(document.getMainDocumentPart().getJaxbElement(), elementClass),
                             getElementStreamFrom(document, elementClass, Namespaces.FOOTER)
                     )
                     .flatMap(identity())
